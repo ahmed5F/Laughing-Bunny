@@ -2,10 +2,10 @@
 const menuItems = [
     {
         id: 1,
-        name: "فادفل مشكل",
+        name: "فلافل مشكل",
         price: 500,
         category: "sandwiches",
-        description: "ساندويش فادفل مشكل مع الخضار والصلصة الخاصة",
+        description: "ساندويش فلافل مشكل مع الخضار والصلصة الخاصة",
         badge: "الأكثر مبيعاً"
     },
     {
@@ -39,7 +39,7 @@ const menuItems = [
     },
     {
         id: 6,
-        name: "وجبة فادفل",
+        name: "وجبة فلافل",
         price: 3000,
         category: "meals",
         description: "وجبة كاملة مع بطاطس ومشروب"
@@ -53,10 +53,10 @@ const menuItems = [
     },
     {
         id: 8,
-        name: "صاح فادفل",
+        name: "صاح فلافل",
         price: 1000,
         category: "meals",
-        description: "وجبة فادفل مشكل كبيرة"
+        description: "وجبة فلافل مشكل كبيرة"
     },
     {
         id: 9,
@@ -457,8 +457,8 @@ function generateOrderNumber() {
 
 // إرسال الطلب إلى تلغرام
 async function sendOrderToTelegram(order) {
-    const botToken = 'YOUR_BOT_TOKEN'; // استبدل ب token بوتك
-    const chatId = 'YOUR_CHAT_ID'; // استبدل ب chat id الخاص بالمدير/المطعم
+    const botToken = '7945152379:AAFtLazXVvOSYzxdwFkQKkRDf7HzRgzG9_s'; // استبدل ب token بوتك
+    const chatId = '909090929'; // استبدل ب chat id الخاص بالمدير/المطعم
     
     // تنسيق رسالة الطلب
     let message = `🎉 **طلب جديد #${order.orderNumber}** 🎉\n\n`;
