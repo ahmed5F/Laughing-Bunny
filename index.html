@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأرنب الضاحك - وجبات سريعة</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>الأرنب الضاحك</h1>
+            <p>وجبات سريعة لذيذة</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#home">الرئيسية</a></li>
+                <li><a href="#menu">قائمة الطعام</a></li>
+                <li><a href="#about">عن المطعم</a></li>
+                <li><a href="#contact">تواصل معنا</a></li>
+                <li><button id="cart-btn"><i class="fas fa-shopping-cart"></i> <span id="cart-count">0</span></button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h2>أشهى الوجبات السريعة في المدينة</h2>
+                <p>اطلب الآن واستمتع بألذ الأطباق مع خدمة التوصيل المجاني للمناطق القريبة</p>
+                <a href="#menu" class="btn">اطلب الآن</a>
+            </div>
+        </section>
+
+        <section id="menu" class="menu-section">
+            <h2>قائمة الطعام</h2>
+            <div class="menu-categories">
+                <button class="category-btn active" data-category="all">الكل</button>
+                <button class="category-btn" data-category="sandwiches">ساندويش</button>
+                <button class="category-btn" data-category="meals">صايج</button>
+                <button class="category-btn" data-category="drinks">عصائر</button>
+            </div>
+
+            <div class="menu-items">
+                <!-- سيتم ملؤها بواسطة JavaScript -->
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <h2>عن المطعم</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>مطعم الأرنب الضاحك يقدم أشهى الوجبات السريعة بأجود المكونات وأفضل الأسعار.</p>
+                    <p>نعمل من الساعة 3 ظهراً حتى 1 ليلاً.</p>
+                    <p>توصيل مجاني للمناطق القريبة.</p>
+                    <p>العنوان: المنصورية - مقابل جامع الثقلين</p>
+                </div>
+                <div class="about-image">
+                    <img src="https://via.placeholder.com/400x300" alt="صورة المطعم">
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact-section">
+            <h2>تواصل معنا</h2>
+            <div class="contact-content">
+                <form id="contact-form">
+                    <input type="text" placeholder="اسمك" required>
+                    <input type="email" placeholder="بريدك الإلكتروني" required>
+                    <input type="tel" placeholder="رقم هاتفك" required>
+                    <textarea placeholder="رسالتك" required></textarea>
+                    <button type="submit" class="btn">إرسال</button>
+                </form>
+                <div class="contact-info">
+                    <p><i class="fas fa-phone"></i> 07701234567</p>
+                    <p><i class="fas fa-envelope"></i> info@al-arnab.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> المصورة - مقابل جامع القلبين</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- عربة التسوق الجانبية -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>عربة التسوق</h3>
+            <button id="close-cart">&times;</button>
+        </div>
+        <div class="cart-items">
+            <!-- سيتم ملؤها بواسطة JavaScript -->
+        </div>
+        <div class="cart-total">
+            <p>المجموع: <span id="total-amount">0</span> دينار</p>
+            <button id="checkout-btn" class="btn">إتمام الطلب</button>
+        </div>
+    </div>
+
+    <!-- نموذج إتمام الطلب -->
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>إتمام الطلب</h2>
+            <form id="checkout-form">
+                <input type="text" placeholder="الاسم الكامل" required>
+                <input type="tel" placeholder="رقم الهاتف" required>
+                <textarea placeholder="العنوان بالتفصيل" required></textarea>
+                <div class="payment-options">
+                    <label>
+                        <input type="radio" name="payment" value="cash" checked>
+                        نقداً عند الاستلام
+                    </label>
+                    <label>
+                        <input type="radio" name="payment" value="card">
+                        الدفع بالبطاقة
+                    </label>
+                </div>
+                <button type="submit" class="btn">تأكيد الطلب</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 الأرنب الضاحك. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
