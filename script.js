@@ -2,7 +2,7 @@
 const menuItems = [
     {
         id: 1,
-        name: "فادفل مشكل",
+        name: "فلافل مشكل",
         price: 500,
         category: "sandwiches",
         description: "ساندويش فادفل مشكل مع الخضار والصلصة الخاصة",
@@ -44,7 +44,7 @@ const menuItems = [
     },
     {
         id: 6,
-        name: "وجبة فادفل",
+        name: "وجبة فلافل",
         price: 3000,
         category: "meals",
         description: "وجبة كاملة مع بطاطس ومشروب",
@@ -60,7 +60,7 @@ const menuItems = [
     },
     {
         id: 8,
-        name: "صاح فادفل",
+        name: "صاح فلافل",
         price: 1000,
         category: "meals",
         description: "وجبة فادفل مشكل كبيرة",
@@ -116,7 +116,7 @@ const menuItems = [
     },
     {
         id: 15,
-        name: "عصير زيب",
+        name: "عصير زبيب",
         price: 500,
         category: "drinks",
         description: "عصير زيب طبيعي",
