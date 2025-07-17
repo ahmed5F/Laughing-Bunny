@@ -2,10 +2,11 @@
 const menuItems = [
     {
         id: 1,
-        name: "فلافل مشكل",
+        name: "فادفل مشكل",
         price: 500,
         category: "sandwiches",
-        description: "ساندويش فادفل مشكل مع الخضار والصلصة الخاصة"
+        description: "ساندويش فادفل مشكل مع الخضار والصلصة الخاصة",
+        badge: "الأكثر مبيعاً"
     },
     {
         id: 2,
@@ -19,7 +20,8 @@ const menuItems = [
         name: "بركر بالجبن",
         price: 1500,
         category: "sandwiches",
-        description: "برجر لحم مع جبنة شيدر ذائبة"
+        description: "برجر لحم مع جبنة شيدر ذائبة",
+        badge: "جديد"
     },
     {
         id: 4,
@@ -37,9 +39,9 @@ const menuItems = [
     },
     {
         id: 6,
-        name: "وجبة فلافل",
+        name: "وجبة فادفل",
         price: 3000,
-        category: "sandwiches",
+        category: "meals",
         description: "وجبة كاملة مع بطاطس ومشروب"
     },
     {
@@ -140,9 +142,67 @@ const totalAmount = document.getElementById('total-amount');
 const checkoutBtn = document.getElementById('checkout-btn');
 const checkoutModal = document.getElementById('checkout-modal');
 const closeModalBtn = document.querySelector('.close-modal');
+const checkoutForm = document.getElementById('checkout-form');
+const successModal = document.getElementById('success-modal');
+const closeSuccessBtn = document.getElementById('close-success');
+const menuToggle = document.querySelector('.menu-toggle');
+const navMenu = document.querySelector('nav ul');
+const header = document.querySelector('header');
 
 // عربة التسوق
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+// تهيئة الصفحة
+document.addEventListener('DOMContentLoaded', () => {
+    displayMenuItems();
+    updateCart();
+    setupEventListeners();
+    
+    // إضافة تأثير التمرير للهيدر
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+});
+
+// إعداد مستمعي الأحداث
+function setupEventListeners() {
+    // تصفية القائمة حسب الفئة
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            displayMenuItems(button.dataset.category);
+        });
+    });
+    
+    // فتح/إغلاق عربة التسوق
+    cartBtn.addEventListener('click', openCart);
+    closeCartBtn.addEventListener('click', closeCart);
+    
+    // فتح/إغلاق نافذة الطلب
+    checkoutBtn.addEventListener('click', openCheckoutModal);
+    closeModalBtn.addEventListener('click', closeCheckoutModal);
+    closeSuccessBtn.addEventListener('click', closeSuccessModal);
+    
+    // إرسال الطلب
+    checkoutForm.addEventListener('submit', processOrder);
+    
+    // القائمة المتنقلة
+    menuToggle.addEventListener('click', toggleMobileMenu);
+    
+    // إغلاق القائمة عند النقر على رابط
+    document.querySelectorAll('nav ul li a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                navMenu.classList.remove('open');
+            }
+        });
+    });
+}
 
 // عرض عناصر القائمة
 function displayMenuItems(category = 'all') {
@@ -157,13 +217,21 @@ function displayMenuItems(category = 'all') {
         menuItemElement.classList.add('menu-item');
         menuItemElement.dataset.category = item.category;
         
+        let badgeHTML = '';
+        if (item.badge) {
+            badgeHTML = `<span class="item-badge">${item.badge}</span>`;
+        }
+        
         menuItemElement.innerHTML = `
-            <img src="https://via.placeholder.com/300x200?text=${encodeURIComponent(item.name)}" alt="${item.name}">
+            ${badgeHTML}
+            <img src="images/menu-item-${item.id}.jpg" alt="${item.name}" class="menu-item-img">
             <div class="menu-item-content">
                 <h3>${item.name}</h3>
                 <p>${item.description}</p>
                 <span class="price">${item.price} دينار</span>
-                <button class="add-to-cart" data-id="${item.id}">أضف إلى السلة</button>
+                <button class="add-to-cart" data-id="${item.id}">
+                    <i class="fas fa-plus"></i> أضف إلى السلة
+                </button>
             </div>
         `;
         
@@ -176,18 +244,9 @@ function displayMenuItems(category = 'all') {
     });
 }
 
-// تصفية العناصر حسب الفئة
-categoryButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        categoryButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        displayMenuItems(button.dataset.category);
-    });
-});
-
 // إضافة عنصر إلى السلة
 function addToCart(e) {
-    const itemId = parseInt(e.target.dataset.id);
+    const itemId = parseInt(e.target.closest('.add-to-cart').dataset.id);
     const item = menuItems.find(item => item.id === itemId);
     
     const existingItem = cart.find(cartItem => cartItem.id === itemId);
@@ -203,33 +262,30 @@ function addToCart(e) {
     
     updateCart();
     showCartNotification(item.name);
+    openCart();
 }
 
 // عرض إشعار عند الإضافة للسلة
 function showCartNotification(itemName) {
     const notification = document.createElement('div');
     notification.classList.add('notification');
-    notification.textContent = `تمت إضافة ${itemName} إلى السلة`;
-    notification.style.position = 'fixed';
-    notification.style.bottom = '20px';
-    notification.style.left = '50%';
-    notification.style.transform = 'translateX(-50%)';
-    notification.style.backgroundColor = 'var(--success-color)';
-    notification.style.color = 'white';
-    notification.style.padding = '10px 20px';
-    notification.style.borderRadius = '5px';
-    notification.style.zIndex = '1000';
-    notification.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
+    notification.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>تمت إضافة ${itemName} إلى السلة</span>
+    `;
     
     document.body.appendChild(notification);
     
     setTimeout(() => {
-        notification.style.opacity = '0';
-        notification.style.transition = 'opacity 0.5s';
+        notification.classList.add('show');
+    }, 10);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
         setTimeout(() => {
             notification.remove();
-        }, 500);
-    }, 2000);
+        }, 300);
+    }, 3000);
 }
 
 // تحديث عربة التسوق
@@ -245,8 +301,9 @@ function updateCart() {
     cartItemsContainer.innerHTML = '';
     
     if (cart.length === 0) {
-        cartItemsContainer.innerHTML = '<p>السلة فارغة</p>';
+        cartItemsContainer.innerHTML = '<p class="empty-cart">السلة فارغة</p>';
         totalAmount.textContent = '0';
+        checkoutBtn.disabled = true;
     } else {
         let total = 0;
         
@@ -274,6 +331,7 @@ function updateCart() {
         });
         
         totalAmount.textContent = total;
+        checkoutBtn.disabled = false;
         
         // إضافة مستمعي الأحداث لأزرار الكمية والإزالة
         document.querySelectorAll('.decrease').forEach(button => {
@@ -320,62 +378,132 @@ function removeItem(e) {
     updateCart();
 }
 
-// فتح/إغلاق عربة التسوق
-cartBtn.addEventListener('click', () => {
+// فتح عربة التسوق
+function openCart() {
     cartSidebar.classList.add('open');
-});
+}
 
-closeCartBtn.addEventListener('click', () => {
+// إغلاق عربة التسوق
+function closeCart() {
     cartSidebar.classList.remove('open');
-});
+}
 
-// فتح/إغلاق نافذة الطلب
-checkoutBtn.addEventListener('click', () => {
+// فتح نافذة الطلب
+function openCheckoutModal() {
     if (cart.length === 0) {
         alert('السلة فارغة. أضف بعض العناصر أولاً.');
         return;
     }
     
-    cartSidebar.classList.remove('open');
-    checkoutModal.style.display = 'flex';
-});
+    closeCart();
+    checkoutModal.classList.add('open');
+}
 
-closeModalBtn.addEventListener('click', () => {
-    checkoutModal.style.display = 'none';
-});
+// إغلاق نافذة الطلب
+function closeCheckoutModal() {
+    checkoutModal.classList.remove('open');
+}
 
-// إرسال الطلب
-document.getElementById('checkout-form').addEventListener('submit', function(e) {
+// إغلاق نافذة النجاح
+function closeSuccessModal() {
+    successModal.classList.remove('open');
+}
+
+// معالجة الطلب
+async function processOrder(e) {
     e.preventDefault();
     
-    const formData = new FormData(this);
+    const formData = new FormData(checkoutForm);
+    const orderNumber = generateOrderNumber();
+    
     const order = {
+        orderNumber: orderNumber,
         customer: {
             name: formData.get('name'),
             phone: formData.get('phone'),
             address: formData.get('address'),
-            payment: formData.get('payment')
+            notes: formData.get('notes')
         },
+        payment: formData.get('payment'),
         items: cart,
         total: parseInt(totalAmount.textContent),
-        date: new Date().toISOString()
+        date: new Date().toLocaleString('ar-IQ')
     };
     
-    // هنا يمكنك إرسال الطلب إلى الخادم أو حفظه في localStorage
-    console.log('تم استلام الطلب:', order);
+    // إرسال الطلب إلى بوت تلغرام
+    const isSent = await sendOrderToTelegram(order);
     
-    // عرض رسالة نجاح
-    alert(`شكراً لك ${order.customer.name}! تم استلام طلبك وسيتم توصيله قريباً.`);
+    if (isSent) {
+        // عرض رسالة النجاح
+        document.getElementById('order-number').textContent = orderNumber;
+        checkoutModal.classList.remove('open');
+        successModal.classList.add('open');
+        
+        // إفراغ السلة
+        cart = [];
+        localStorage.removeItem('cart');
+        updateCart();
+    } else {
+        alert('حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى أو الاتصال بنا مباشرة.');
+    }
+}
+
+// توليد رقم طلب عشوائي
+function generateOrderNumber() {
+    const letters = 'AR';
+    const numbers = Math.floor(10000 + Math.random() * 90000);
+    return `${letters}-${numbers}`;
+}
+
+// إرسال الطلب إلى تلغرام
+async function sendOrderToTelegram(order) {
+    const botToken = 'YOUR_BOT_TOKEN'; // استبدل ب token بوتك
+    const chatId = 'YOUR_CHAT_ID'; // استبدل ب chat id الخاص بالمدير/المطعم
     
-    // إفراغ السلة وإغلاق النوافذ
-    cart = [];
-    localStorage.removeItem('cart');
-    updateCart();
-    checkoutModal.style.display = 'none';
+    // تنسيق رسالة الطلب
+    let message = `🎉 **طلب جديد #${order.orderNumber}** 🎉\n\n`;
+    message += `📅 التاريخ: ${order.date}\n\n`;
+    message += `👤 **العميل**:\n`;
+    message += `- الاسم: ${order.customer.name}\n`;
+    message += `- الهاتف: ${order.customer.phone}\n`;
+    message += `- العنوان: ${order.customer.address}\n`;
+    if (order.customer.notes) {
+        message += `- الملاحظات: ${order.customer.notes}\n`;
+    }
+    message += `💳 طريقة الدفع: ${order.payment === 'cash' ? 'نقداً عند الاستلام' : 'الدفع بالبطاقة'}\n\n`;
+    message += `🛒 **الطلبات**:\n`;
     
-    // إعادة تحميل الصفحة
-    location.reload();
-});
+    order.items.forEach(item => {
+        message += `- ${item.name} (${item.quantity}x) - ${item.price * item.quantity} دينار\n`;
+    });
+    
+    message += `\n💰 **المجموع الكلي**: ${order.total} دينار`;
+    
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        });
+        
+        const data = await response.json();
+        return data.ok;
+    } catch (error) {
+        console.error('Error:', error);
+        return false;
+    }
+}
+
+// تبديل القائمة المتنقلة
+function toggleMobileMenu() {
+    navMenu.classList.toggle('open');
+}
 
 // التمرير السلس للروابط
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -390,12 +518,11 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 top: targetElement.offsetTop - 80,
                 behavior: 'smooth'
             });
+            
+            // إغلاق القائمة المتنقلة إذا كانت مفتوحة
+            if (window.innerWidth <= 768) {
+                navMenu.classList.remove('open');
+            }
         }
     });
-});
-
-// تهيئة الصفحة
-document.addEventListener('DOMContentLoaded', () => {
-    displayMenuItems();
-    updateCart();
 });
