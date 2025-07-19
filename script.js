@@ -140,8 +140,8 @@ const menuItems = [
     },
     {
         id: 18,
-        name: "مقبلات الفين",
-        price: 500,
+        name: "مقبلات ",
+        price: 2000,
         category: "drinks",
         description: "مجموعة من المقبلات الخفيفة",
         image: "images/menu/drink-6.jpg"
